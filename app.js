@@ -1,28 +1,37 @@
 const express = require("express");
-require("dotenv/config");
-const app = express();
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+
+// Load environment variables from .env file
+dotenv.config();
+
+const app = express();
 const PORT = process.env.PORT;
 const DB_ENDPOINT = process.env.DB_ENDPOINT;
 const API_URL = process.env.API_URL;
-const mongoose = require("mongoose");
-const router = require("./controllers/users");
 
+// Connect to the database
 mongoose
-  .connect(DB_ENDPOINT)
-  .then(() => {
-    console.log("Database is connected!");
-  })
-  .catch((err) => console.log(err, "Somthing went wrong"));
+  .connect(DB_ENDPOINT, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Database connected!"))
+  .catch((err) => console.error("Error connecting to the database:", err));
 
+// Middleware
 app.use(cors());
-app.options(cors());
+app.options("*", cors());
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
-app.use(API_URL, router);
 
+// Routers
+const usersRouter = require("./controllers/users");
+const categoriesRouter = require("./controllers/categories");
+app.use(API_URL, usersRouter);
+app.use(API_URL, categoriesRouter);
+
+// Start the server
 app.listen(PORT, () => {
-  console.log("server is runnig at -> " + PORT);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

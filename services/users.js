@@ -15,7 +15,11 @@ const usersService = {
 
   // Get a specific user by ID
   getOne: async (id) => {
-    const user = await User.findById(+id);
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("User does not exist");
+    }
     return user;
   },
 
@@ -28,6 +32,7 @@ const usersService = {
     if (!deletedUser) {
       throw new Error("User not found");
     }
+    return { message: `user with ID ${_id} has been deleted successfully` };
   },
 };
 
