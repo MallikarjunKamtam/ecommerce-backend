@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const usersRouter = require("./controllers/users");
+const categoriesRouter = require("./controllers/categories");
+const subCategoriesRouter = require("./controllers/sub_category");
 
 // Load environment variables from .env file
 dotenv.config();
@@ -26,10 +29,10 @@ app.use(morgan("tiny"));
 app.use(bodyParser.json());
 
 // Routers
-const usersRouter = require("./controllers/users");
-const categoriesRouter = require("./controllers/categories");
+
 app.use(API_URL, usersRouter);
 app.use(API_URL, categoriesRouter);
+app.use(API_URL, subCategoriesRouter);
 
 // Start the server
 app.listen(PORT, () => {
